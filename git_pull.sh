@@ -62,7 +62,22 @@ function Git_PullScripts {
   git reset --hard origin/master
   echo
 }
-
+#随机数
+function rand(){   
+    min=$1   
+    max=$(($2-$min+1))   
+    num=$(date +%s%N)   
+    echo $(($num%$max+$min))   
+}
+## 更改crontab
+function Update_Cron {
+  rnd=$(rand 13 59)
+  if [ -f ${ListCron} ]; then
+  #修改美丽研究院分为随机cron
+    perl -i -pe "s|1 7,12(.+jd_beauty\W*.*)|$rnd 7,12\1|" ${ListCron}
+    crontab ${ListCron}
+  fi
+}
 ## 用户数量UserSum
 function Count_UserSum {
   i=1
