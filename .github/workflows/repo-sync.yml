@@ -9,7 +9,7 @@ on:
   push:
     branches: [ master ]
   repository_dispatch:
-    types: gitee-docker
+    types: sync-docker-jdbase
 jobs:
   repo-sync:
     env:
