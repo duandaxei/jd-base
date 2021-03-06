@@ -38,6 +38,8 @@ function Update_Cron {
     perl -i -pe "s|.+(bash git_pull.+)|${RanMin} ${H} \* \* \* sleep ${RanSleep} && \1|" ${ListCron}
     #美丽研究院分随机cron
     perl -i -pe "s|1 7,12(.+jd_beauty\W*.*)|${ranH} 7,12\1|" ${ListCron}
+    #修复joy_run错误cron
+    perl -i -pe "s|18 11,14(.+jd_joy_run\W*.*)|${RanHour} 9-20/2\1|" ${ListCron}
     crontab ${ListCron}
   fi
 }
@@ -77,21 +79,21 @@ function Count_UserSum {
 }
 
 ## 把config.sh中提供的所有账户的PIN附加在jd_joy_run.js中，让各账户相互进行宠汪汪赛跑助力
-## 2021-3-1宠汪汪赛跑助力脚本加密；无法使用，故注释
-#function Change_JoyRunPins {
-#  j=${UserSum}
-#  PinALL=""
-#  while [[ $j -ge 1 ]]
-#  do
-#    Tmp=Cookie$j
-#    CookieTemp=${!Tmp}
-#    PinTemp=$(echo ${CookieTemp} | perl -pe "{s|.*pt_pin=(.+);|\1|; s|%|\\\x|g}")
-#    PinTempFormat=$(printf ${PinTemp})
-#    PinALL="${PinTempFormat},${PinALL}"
-#    let j--
-#  done
-#  perl -i -pe "{s|(let invite_pins = \[\")(.+\"\];?)|\1${PinALL}\2|; s|(let run_pins = \[\")(.+\"\];?)|\1${PinALL}\2|}" ${ScriptsDir}/jd_joy_run.js
-#}
+## 2021年03月05日脚本已支持账号内部助力
+function Change_JoyRunPins {
+  j=${UserSum}
+  PinALL=""
+  while [[ $j -ge 1 ]]
+  do
+    Tmp=Cookie$j
+    CookieTemp=${!Tmp}
+    PinTemp=$(echo ${CookieTemp} | perl -pe "{s|.*pt_pin=(.+);|\1|; s|%|\\\x|g}")
+    PinTempFormat=$(printf ${PinTemp})
+    PinALL="${PinTempFormat},${PinALL}"
+    let j--
+  done
+#  perl -i -pe "{s|(let invite_pins = \[\')(.+\'\];?)|\1${PinALL}\2|; s|(let run_pins = \[\')(.+\'\];?)|\1${PinALL}\2|}" ${ScriptsDir}/jd_joy_run.js
+}
 
 ## 修改lxk0301大佬js文件的函数汇总
 function Change_ALL {
@@ -99,7 +101,6 @@ function Change_ALL {
     . ${FileConf}
     if [ -n "${Cookie1}" ]; then
       Count_UserSum
-#      Change_JoyRunPins
     fi
   fi
 }
